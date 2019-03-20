@@ -51,7 +51,7 @@ class ProjectsController extends Controller {
     /**
      * @return array
      */
-    public function validateRequest()
+    protected function validateRequest()
     {
         return request()->validate( [
             'title'       => 'sometimes|required',
