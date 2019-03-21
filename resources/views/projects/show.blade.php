@@ -49,11 +49,10 @@
                     <form method="POST" action="{{ $project->path() }}">
                         @csrf
                         @method('PATCH')
-                        <textarea class="card w-full mb-4"
+                        <textarea name="notes"
+                                  class="card w-full mb-4"
                                   style="min-height: 200px"
-                                  placeholder="Anything special that you want to make a note of?">
-                            {{$project->notes}}
-                        </textarea>
+                                  placeholder="Anything special that you want to make a note of?">{{$project->notes}}</textarea>
                         <button type="submit" class="button">Save</button>
                     </form>
                     @if ($errors->any())
@@ -69,6 +68,7 @@
 
             <div class="lg:w-1/4 px-3 mt-8">
                 @include('projects.card')
+               @include('projects.activity.card')
             </div>
         </div>
     </main>
