@@ -54,17 +54,28 @@ class ManageProjectsTest extends TestCase {
     }
 
     /** @test */
-    public function unauthotized_users_cannot_delete_projects()
+    public function a_user_can_see_all_projects_they_have_been_invited_to_on_their_dashboard()
+    {
+        $project = tap(ProjectFactory::create())->invite( $this->signIn() );
+
+        $this->get( '/projects' )
+            ->assertSee( $project->title );
+
+    }
+
+
+    /** @test */
+    public function unauthorized_users_cannot_delete_projects()
     {
 
         $project = ProjectFactory::create();
 
-        $this->delete( $project->path())
-            ->assertRedirect( '/login');
+        $this->delete( $project->path() )
+            ->assertRedirect( '/login' );
 
         $this->signIn();
 
-        $this->delete($project->path())->assertStatus(403);
+        $this->delete( $project->path() )->assertStatus( 403 );
     }
 
     /** @test */
@@ -74,10 +85,10 @@ class ManageProjectsTest extends TestCase {
         $project = ProjectFactory::create();
 
         $this->actingAs( $project->owner )
-            ->delete( $project->path())
-            ->assertRedirect( '/projects');
+            ->delete( $project->path() )
+            ->assertRedirect( '/projects' );
 
-        $this->assertDatabaseMissing('projects', $project->only('id'));
+        $this->assertDatabaseMissing( 'projects', $project->only( 'id' ) );
     }
 
 
@@ -87,10 +98,10 @@ class ManageProjectsTest extends TestCase {
         $project = ProjectFactory::create();
 
         $this->actingAs( $project->owner )
-            ->patch( $project->path(), $attributes = ['title' => 'Changed', 'description' => 'Changed','notes' => 'Changed'] )
+            ->patch( $project->path(), $attributes = ['title' => 'Changed', 'description' => 'Changed', 'notes' => 'Changed'] )
             ->assertRedirect( $project->path() );
 
-        $this->get($project->path() . '/edit')->assertOk();
+        $this->get( $project->path() . '/edit' )->assertOk();
 
         $this->assertDatabaseHas( 'projects', $attributes );
     }
@@ -111,7 +122,7 @@ class ManageProjectsTest extends TestCase {
     public function a_user_can_view_their_project()
     {
         $project = ProjectFactory::create();
-        $this->actingAs($project->owner)
+        $this->actingAs( $project->owner )
             ->get( $project->path() )
             ->assertSee( $project->title )
             ->assertSee( Str::limit( $project->description ) );
@@ -134,7 +145,7 @@ class ManageProjectsTest extends TestCase {
 
         $project = factory( 'App\Project' )->create();
 
-        $this->patch( $project->path())->assertStatus( 403 );
+        $this->patch( $project->path() )->assertStatus( 403 );
     }
 
     /** @test */
