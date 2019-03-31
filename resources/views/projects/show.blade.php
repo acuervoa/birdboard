@@ -10,8 +10,15 @@
                     My Projects</a> / {{ $project->title }}
             </p>
 
-
-            <a href="{{ $project->path() . '/edit' }}" class="button">Edit Project</a>
+            <div class="flex items-center">
+                @foreach ($project->members as $member)
+                    <img src="https://gravatar.com/avatar/{{ md5($member->email) }}?s=60"
+                         alt="{{ $member->name }}'s avatar" class="rounded-full w-8 mr-2">
+                @endforeach
+                    <img src="https://gravatar.com/avatar/{{ md5($project->owner->email) }}?s=60"
+                         alt="{{ $project->owner->name }}'s avatar" class="rounded-full w-8 mr-2">
+                <a href="{{ $project->path() . '/edit' }}" class="button ml-4">Edit Project</a>
+            </div>
         </div>
     </header>
 
@@ -68,7 +75,7 @@
 
             <div class="lg:w-1/4 px-3 mt-8">
                 @include('projects.card')
-               @include('projects.activity.card')
+                @include('projects.activity.card')
             </div>
         </div>
     </main>
